@@ -1,4 +1,4 @@
-import ServerBootstrap from "@infrastructure/bootstrap/server/server-bootstrap";
+import ServerBootstrap from "@infrastructure/bootstrap/server/server.bootstrap";
 
 const serverBoostrap: ServerBootstrap = new ServerBootstrap();
 

@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "ts-node src/main.ts",
         "test": "vitest",
+        "test:coverage": "vitest run --coverage",
         "biome:format": "biome format --write",
         "biome:lint": "biome lint --write",
         "biome:check": "biome check --write"
@@ -17,6 +18,7 @@
     "devDependencies": {
         "@biomejs/biome": "^2.2.2",
         "@types/node": "^24.3.0",
+        "@vitest/coverage-istanbul": "3.2.4",
         "ts-node": "^10.9.2",
         "typescript": "^5.9.2",
         "vitest": "^3.2.4"
