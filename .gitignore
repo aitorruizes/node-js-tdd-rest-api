@@ -1,0 +1,5 @@
+# Ignore the node_modules folder which contains installed dependencies
+node_modules/
+
+# Ignore the pnpm lockfile (if you prefer not to version control the lockfile)
+pnpm-lock.yaml
