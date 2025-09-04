@@ -38,9 +38,8 @@ describe("user repository", () => {
             password: "Test$123",
         };
 
-        const result: Partial<UserEntity> = await userRepository.createUser(
-            userEntity
-        );
+        const result: Partial<UserEntity> =
+            await userRepository.createUser(userEntity);
 
         expect(result).toBeDefined();
         expect(result).toEqual(userEntityMock);
@@ -61,7 +60,7 @@ describe("user repository", () => {
         };
 
         await expect(userRepository.createUser(userEntity)).rejects.toThrow(
-            "Failed to create user"
+            "Failed to create user",
         );
     });
 });

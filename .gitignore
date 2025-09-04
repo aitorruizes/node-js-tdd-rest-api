@@ -3,3 +3,6 @@ node_modules/
 
 # Ignore the pnpm lockfile (if you prefer not to version control the lockfile)
 pnpm-lock.yaml
+
+# Ignore coverage report
+coverage/

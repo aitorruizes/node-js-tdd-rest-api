@@ -12,14 +12,8 @@ type MakeSutReturn = {
 
 const makeSut = (): MakeSutReturn => {
     const bcryptAdapter: BcryptAdapter = new BcryptAdapter();
-
-    const bcryptHashSpy: MockInstance = vi
-        .spyOn(bcryptjs, "hash")
-        .mockRejectedValue(new Error("hash error"));
-
-    const bcryptCompareSpy: MockInstance = vi
-        .spyOn(bcryptjs, "compare")
-        .mockRejectedValue(new Error("compare error"));
+    const bcryptHashSpy: MockInstance = vi.spyOn(bcryptjs, "hash");
+    const bcryptCompareSpy: MockInstance = vi.spyOn(bcryptjs, "compare");
 
     return { bcryptAdapter, bcryptHashSpy, bcryptCompareSpy };
 };
@@ -40,6 +34,9 @@ describe("bcrypt adapter", () => {
 
     it("should throw if bcrypt.hash throws", async () => {
         const { bcryptAdapter, bcryptHashSpy } = makeSut();
+
+        bcryptHashSpy.mockRejectedValue(new Error("hash error"));
+
         const result: Promise<string> = bcryptAdapter.hash("any_value");
 
         await expect(result).rejects.toThrow("hash error");
@@ -48,7 +45,7 @@ describe("bcrypt adapter", () => {
 
         expect(bcryptHashSpy).toHaveBeenCalledWith(
             "any_value",
-            BCRPYT_DEFAULT_COST
+            BCRPYT_DEFAULT_COST,
         );
     });
 
@@ -61,7 +58,7 @@ describe("bcrypt adapter", () => {
 
         const result: boolean = await bcryptAdapter.compare(
             password,
-            passwordHash
+            passwordHash,
         );
 
         expect(result).toBeTruthy();
@@ -76,7 +73,7 @@ describe("bcrypt adapter", () => {
 
         const result: boolean = await bcryptAdapter.compare(
             password,
-            passwordHash
+            passwordHash,
         );
 
         expect(result).toBeFalsy();
@@ -89,9 +86,11 @@ describe("bcrypt adapter", () => {
         const passwordHash: string =
             "$2a$12$DEZ8fbQyAuqV/s2rR6CLEu9DHXD10XgPf/iBc5JvExS2788Gm8B0q";
 
+        bcryptCompareSpy.mockRejectedValue(new Error("compare error"));
+
         const result: Promise<boolean> = bcryptAdapter.compare(
             password,
-            passwordHash
+            passwordHash,
         );
 
         await expect(result).rejects.toThrow("compare error");

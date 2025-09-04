@@ -12,7 +12,7 @@ export default class UserRepository {
         } catch (err) {
             console.error(err);
 
-            return Promise.reject(err);
+            throw err;
         }
     }
 }
