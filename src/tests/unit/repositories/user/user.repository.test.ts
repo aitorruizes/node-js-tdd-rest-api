@@ -3,11 +3,13 @@ import type { UserPersistence } from "@domain/ports/user/user.port";
 import UserRepository from "@infrastructure/repositories/user/user.repository";
 import { describe, expect, it, type Mock, vi } from "vitest";
 
-const makeSut = (): {
+type MakeSutReturn = {
     userRepository: UserRepository;
     createUserMock: Mock;
     userEntityMock: Partial<UserEntity>;
-} => {
+};
+
+const makeSut = (): MakeSutReturn => {
     const userEntityMock: Partial<UserEntity> = {
         id: "1",
         samp_username: "John_Doe",
@@ -36,8 +38,9 @@ describe("user repository", () => {
             password: "Test$123",
         };
 
-        const result: Partial<UserEntity> =
-            await userRepository.createUser(userEntity);
+        const result: Partial<UserEntity> = await userRepository.createUser(
+            userEntity
+        );
 
         expect(result).toBeDefined();
         expect(result).toEqual(userEntityMock);
@@ -58,7 +61,7 @@ describe("user repository", () => {
         };
 
         await expect(userRepository.createUser(userEntity)).rejects.toThrow(
-            "Failed to create user",
+            "Failed to create user"
         );
     });
 });
