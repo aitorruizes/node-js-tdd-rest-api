@@ -1,11 +1,11 @@
+import type { UserGatewayPort } from "@application/ports/user/user-gateway.port";
 import type { UserEntity } from "@domain/entities/user/user.entity";
-import type { UserPersistence } from "@domain/ports/user/user.port";
-import UserRepository from "@infrastructure/repositories/user/user.repository";
+import UserRepository from "@infrastructure/repositories/auth/sign-up.repository";
 import { describe, expect, it, type Mock, vi } from "vitest";
 
 type MakeSutReturn = {
     userRepository: UserRepository;
-    createUserMock: Mock;
+    insertUserMock: Mock;
     userEntityMock: Partial<UserEntity>;
 };
 
@@ -16,20 +16,20 @@ const makeSut = (): MakeSutReturn => {
         email: "johndoe@gmail.com",
     };
 
-    const createUserMock: Mock = vi.fn().mockResolvedValue(userEntityMock);
+    const insertUserMock: Mock = vi.fn().mockResolvedValue(userEntityMock);
 
-    const userGatewayMock: UserPersistence = {
-        createUser: createUserMock,
-    } as UserPersistence;
+    const userGatewayMock: UserGatewayPort = {
+        insertUser: insertUserMock,
+    } as UserGatewayPort;
 
     const userRepository: UserRepository = new UserRepository(userGatewayMock);
 
-    return { userRepository, createUserMock, userEntityMock };
+    return { userRepository, insertUserMock, userEntityMock };
 };
 
 describe("user repository", () => {
-    it("should successfully create a new user", async () => {
-        const { userRepository, createUserMock, userEntityMock } = makeSut();
+    it("should create a new user successfully", async () => {
+        const { userRepository, insertUserMock, userEntityMock } = makeSut();
 
         const userEntity: Partial<UserEntity> = {
             samp_username: "John_Doe",
@@ -39,18 +39,18 @@ describe("user repository", () => {
         };
 
         const result: Partial<UserEntity> =
-            await userRepository.createUser(userEntity);
+            await userRepository.execute(userEntity);
 
         expect(result).toBeDefined();
         expect(result).toEqual(userEntityMock);
-        expect(createUserMock).toHaveBeenCalledTimes(1);
-        expect(createUserMock).toHaveBeenCalledWith(userEntity);
+        expect(insertUserMock).toHaveBeenCalledTimes(1);
+        expect(insertUserMock).toHaveBeenCalledWith(userEntity);
     });
 
-    it("should throw error when createUser fails", async () => {
-        const { userRepository, createUserMock } = makeSut();
+    it("should throw error when execute fails", async () => {
+        const { userRepository, insertUserMock } = makeSut();
 
-        createUserMock.mockRejectedValue(new Error("Failed to create user"));
+        insertUserMock.mockRejectedValue(new Error("Failed to create user"));
 
         const userEntity: Partial<UserEntity> = {
             samp_username: "John_Doe",
@@ -59,7 +59,7 @@ describe("user repository", () => {
             password: "Test$123",
         };
 
-        await expect(userRepository.createUser(userEntity)).rejects.toThrow(
+        await expect(userRepository.execute(userEntity)).rejects.toThrow(
             "Failed to create user",
         );
     });
