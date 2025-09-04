@@ -6,7 +6,11 @@ export default defineConfig({
         coverage: {
             provider: "istanbul",
             reporter: ["text", "lcov"],
-            include: ["src/infrastructure/repositories/**/*.ts"],
+            include: [
+                "src/infrastructure/repositories/**/*.ts",
+                "src/infrastructure/adapters/**/*.ts",
+            ],
+            all: true,
         },
     },
     resolve: {
